@@ -1,0 +1,39 @@
+import boto3
+import logging
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+client = boto3.client('ses')
+
+def send_email(event, context):
+    logger.info("Event: " + str(event))
+    eemail=event['email']
+    mmessage=event['message']
+    client = boto3.client('ses')
+    client.send_email(
+    #Put source email address. Remember domain name should be verified.
+    Source='contact@mydomain.com',
+    Destination={
+    #Put destination email. 
+        'ToAddresses':['me@mydomain.com']
+        },
+    Message={
+        'Subject':{
+            'Data': 'New message from: ' + eemail
+        },
+        'Body':{
+            'Text': {
+                'Data': mmessage
+            }
+        }
+    }
+
+
+    )
+
+
+    return{
+            'message' : "Message sent"
+        }
